@@ -1,0 +1,79 @@
+<!DOCTYPE HTML>
+
+<html>
+
+<head>
+
+	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
+	<script type="text/javascript" src="js/cookie_url_like.js"></script>
+
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title>Like/Dislike current page</title>
+	<style>
+	.like{
+		color: red;
+	}
+	.dislike{
+		color: blue;
+	}
+	</style>
+</head>
+
+<body>
+
+	<a href="#" id="like">me gusta</a>
+
+	<script type="text/javascript">
+	jQuery(document).ready(function($){
+		
+		var path_name = window.location.pathname;	
+		var likes = readLikeCookie();
+		var likes_array;
+
+		if(likes !== null){
+			likes_array = likes.split(",");
+
+			if($.inArray(path_name, likes_array) > -1){
+				$("#like").addClass("like");			
+			}
+			else{
+				$("#like").addClass("dislike");			
+			}
+		}
+		else{
+			$("#like").addClass("dislike");			
+		}
+
+		$("#like").click(function(event){
+			event.preventDefault();
+			
+			if(likes !== null){
+				likes_array = likes.split(",");
+				
+				if($.inArray(path_name, likes_array) > -1){
+
+					var index = $.inArray(path_name, likes_array);
+					if (index>=0) likes_array.splice(index, 1);
+
+					likeCookie(likes_array.join(","));
+					
+					$("#like").removeClass("like");			
+					$("#like").addClass("dislike");			
+				}
+				else{
+					likes_array.push(path_name);
+					likeCookie(likes_array.join(","));
+					$("#like").removeClass("dislike");			
+					$("#like").addClass("like");			
+				}
+			}
+			else{
+				likeCookie(path_name);
+				$("#like").removeClass("dislike");			
+				$("#like").addClass("like");			
+			}
+		});
+	});
+	</script>
+</body>
+</html>
